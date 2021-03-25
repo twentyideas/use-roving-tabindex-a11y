@@ -1,9 +1,9 @@
-import * as React from 'react';
-import { useRovingTabIndex } from '../../dist';
+import * as React from 'react'
+import { useRovingTabIndex } from '../../dist'
 
 export const Table: React.FC = () => {
-  const bodyRef = useRovingTabIndex();
-  const headerRef = useRovingTabIndex();
+  const bodyRef = useRovingTabIndex()
+  const headerRef = useRovingTabIndex()
   return (
     <table style={{ borderCollapse: 'collapse', borderSpacing: 0 }}>
       <thead ref={headerRef}>
@@ -22,10 +22,10 @@ export const Table: React.FC = () => {
         <Row name="Peter" age={30} color="pink" />
       </tbody>
     </table>
-  );
-};
+  )
+}
 
-const rowStyles = {border: "1px solid black", padding: 4}
+const rowStyles = { border: '1px solid black', padding: 4 }
 
 const Header: React.FC<{ name: string; tabIndex?: 0 | -1 }> = ({
   name,
@@ -35,14 +35,14 @@ const Header: React.FC<{ name: string; tabIndex?: 0 | -1 }> = ({
     <th style={rowStyles}>
       <input tabIndex={tabIndex ?? -1} type="checkbox" /> {name}
     </th>
-  );
-};
+  )
+}
 
 interface RowProps {
-  name: string;
-  age: number;
-  color: string;
-  tabIndex?: 0 | -1;
+  name: string
+  age: number
+  color: string
+  tabIndex?: 0 | -1
 }
 
 const Row: React.FC<RowProps> = ({ name, age, color, tabIndex }) => {
@@ -64,7 +64,7 @@ const Row: React.FC<RowProps> = ({ name, age, color, tabIndex }) => {
         </a>
       </TD>
     </tr>
-  );
-};
+  )
+}
 
-const TD: React.FC = ({children}) => <td style={rowStyles}>{children}</td>
+const TD: React.FC = ({ children }) => <td style={rowStyles}>{children}</td>

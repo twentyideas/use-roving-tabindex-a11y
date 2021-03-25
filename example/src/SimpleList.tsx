@@ -1,8 +1,8 @@
-import * as React from 'react';
-import { useRovingTabIndex } from '../../.';
+import * as React from 'react'
+import { useRovingTabIndex } from '../../.'
 
 export const SimpleList: React.FC = () => {
-  const listRef = useRovingTabIndex();
+  const listRef = useRovingTabIndex()
   return (
     <div>
       <h3>Simple List</h3>
@@ -26,13 +26,13 @@ export const SimpleList: React.FC = () => {
         />
       </ul>
     </div>
-  );
-};
+  )
+}
 
 const ListItem: React.FC<{
-  title: string;
-  description: string;
-  tabindex?: 0 | -1;
+  title: string
+  description: string
+  tabindex?: 0 | -1
 }> = ({ title, description, tabindex }) => {
   return (
     <li>
@@ -41,5 +41,5 @@ const ListItem: React.FC<{
       </a>
       <p>{description}</p>
     </li>
-  );
-};
+  )
+}

@@ -1,6 +1,6 @@
-import { nanoid } from 'nanoid'
 import React, { FC, HTMLAttributes, ReactChild } from 'react'
-
+import { clampNumber, useUUID } from './utils'
+``
 export interface Props extends HTMLAttributes<HTMLDivElement> {
   /** custom content, defaults to 'the snozzberries taste like snozzberries' */
   children?: ReactChild
@@ -243,11 +243,3 @@ export const useFocusOnMount = (active?: boolean) => {
   }, [active])
   return focusRef
 }
-
-export const useUUID = (prefix?: string) => {
-  const [id] = React.useState(`${prefix ? prefix + '-' : ''}${nanoid(5)}`)
-  return id
-}
-
-export const clampNumber = (num: number, a: number, b: number) =>
-  Math.max(Math.min(num, Math.max(a, b)), Math.min(a, b))
