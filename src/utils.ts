@@ -1,5 +1,5 @@
 import { nanoid } from 'nanoid'
-import * as React from "react"
+import * as React from 'react'
 
 export const useUUID = (prefix?: string) => {
   const [id] = React.useState(`${prefix ? prefix + '-' : ''}${nanoid(5)}`)
