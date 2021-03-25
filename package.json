@@ -1,5 +1,5 @@
 {
-  "version": "0.1.0",
+  "version": "0.1.1",
   "license": "MIT",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -37,6 +37,13 @@
   },
   "name": "@20i/use-roving-tabindex-a11y",
   "author": "Greg McKelvey",
+  "homepage": "https://github.com/twentyideas/use-roving-tabindex-a11y",
+  "readme": "https://github.com/twentyideas/use-roving-tabindex-a11y/blob/main/README.md",
+  "repository": {
+    "url": "https://github.com/twentyideas/use-roving-tabindex-a11y.git",
+    "type": "git"
+
+  },
   "module": "dist/use-roving-tabindex-a11y.esm.js",
   "size-limit": [
     {
