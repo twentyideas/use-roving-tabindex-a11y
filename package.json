@@ -35,7 +35,7 @@
     "singleQuote": true,
     "trailingComma": "es5"
   },
-  "name": "use-roving-tabindex-a11y",
+  "name": "@20i/use-roving-tabindex-a11y",
   "author": "Greg McKelvey",
   "module": "dist/use-roving-tabindex-a11y.esm.js",
   "size-limit": [
