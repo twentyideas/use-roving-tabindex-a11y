@@ -1,3 +1,133 @@
+# Use Roving Tabindex A11y
+
+This library provides a simple hook that enables keyboard navigation on any list, table body, or table header.
+
+## Usage
+
+Usage Instructions:
+
+1. Create a roving tab index ref in your component
+
+   ```
+   const listRef = useRovingTabIndex()
+   ```
+
+1. Place returned ref on any ul, tableBody, or tableHeader
+
+   ```
+   <ul ref={listRef}>...</ul>
+   ```
+
+1. Give all focusable elements a tabindex of -1
+
+   ```
+   <button tabIndex={-1}>...</button>
+   ```
+
+1. Give the one element you want to have the first default focus a tabindex of 0
+   ```
+   <ul ref={listRef}>
+   <li><a tabIndex={0}>first link</a></li>
+   ...
+   </ul> )
+   ```
+
+## Examples
+
+### Simple list
+
+```tsx
+export const SimpleList: React.FC = () => {
+  const listRef = useRovingTabIndex()
+  return (
+    <div>
+      <h3>Simple List</h3>
+      <ul ref={listRef}>
+        <ListItem
+          tabindex={0}
+          title="Item 1"
+          description="All the things you could ever want to know"
+        />
+        ...
+      </ul>
+    </div>
+  )
+}
+```
+
+### Complex list with horizontal navigation
+
+```tsx
+const ComplexListItem: React.FC<{
+  title: string
+  description: string
+  tabindex?: 0 | -1
+}> = ({ title, description, tabindex }) => {
+  return (
+    <li>
+      {/* Initial focus */}
+      <a href="#" tabIndex={tabindex ?? -1}>
+        <h4>{title}</h4>
+      </a>
+      <p>{description}</p>
+      {/* Focusable element with tabindex of 0 */}
+      <button tabIndex={-1} onClick={() => console.log('subscribe')}>
+        Subscribe
+      </button>
+    </li>
+  )
+}
+```
+
+### Table
+
+```tsx
+export const Table: React.FC = () => {
+  const bodyRef = useRovingTabIndex()
+  const headerRef = useRovingTabIndex()
+  return (
+    <table style={{ borderCollapse: 'collapse', borderSpacing: 0 }}>
+      <thead ref={headerRef}>
+        <tr>
+          <Header tabIndex={0} name="Selected" />
+          {/* This custom <Header /> tabIndex defaults to -1 */}
+          <Header name="Name" />
+          <Header name="Age" />
+          <Header name="Favorite Color" />
+          <Header name="Link" />
+        </tr>
+      </thead>
+      <tbody ref={bodyRef}>
+        <Row tabIndex={0} name="Janet" age={10} color="red" />
+        {/* This custom <Row /> tabIndex defaults to -1 */}
+        <Row name="Paul" age={15} color="green" />
+        <Row name="Judy" age={18} color="blue" />
+        <Row name="Peter" age={30} color="pink" />
+      </tbody>
+    </table>
+  )
+}
+```
+
+## Other Helpful Utility
+
+- `useFocusOnFirstFocusable()`: Auto focus on the first focusable element in an HTMLElement
+- `useFocusOnMount()`: Auto focus on the HTMLElement that the returned ref is attached to
+  ```tsx
+  ...
+  const focusRef = useFocusOnMount()
+  ...
+  return <button ref={focusRef}>Focus on Me First!</button>
+  ```
+- 
+
+## TODO's
+
+- [ ] Invisible screen reader instructions are automatically added // _Todo: Make optional flag?_
+- [ ] Make auto mode to find all focus-ables and handle setting their `tabindex` attribute
+
+---
+
 # TSDX React w/ Storybook User Guide
 
 Congrats! You just saved yourself hours of work by bootstrapping this project with TSDX. Let’s get you oriented with what’s here and how to use it.
@@ -112,11 +242,11 @@ Please see the main `tsdx` [optimizations docs](https://github.com/palmerhq/tsdx
 
 ```js
 // ./types/index.d.ts
-declare var __DEV__: boolean;
+declare var __DEV__: boolean
 
 // inside your code...
 if (__DEV__) {
-  console.log('foo');
+  console.log('foo')
 }
 ```
 
