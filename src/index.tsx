@@ -213,11 +213,11 @@ export const useRovingTabIndex = () => {
  * Gets keyboard-focusable elements within a specified element
  */
 function getKeyboardFocusableElements(element: HTMLElement): Array<any> {
-  return [
-    ...element.querySelectorAll(
+  return Array.from(
+    element.querySelectorAll(
       'a, button, input, textarea, select, details,[tabindex]:not([tabindex="-1"])'
-    ),
-  ].filter(el => !el.hasAttribute('disabled'))
+    )
+  ).filter(el => !el.hasAttribute('disabled'))
 }
 
 export const useFocusOnFirstFocusable = () => {
