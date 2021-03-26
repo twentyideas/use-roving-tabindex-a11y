@@ -37,7 +37,6 @@ interface HTMLElementWithHTMLElementChildNodes extends ElementAndTable {
  */
 export const useRovingTabIndex = () => {
   const instructionsId = useUUID()
-  const horizontalIndex = React.useRef<number | undefined>()
 
   const listRef = React.useCallback<
     (...args: (HTMLElementWithHTMLElementChildNodes | null)[]) => void
@@ -107,16 +106,14 @@ export const useRovingTabIndex = () => {
       // add keyboard arrow listeners
       if (list) {
         const onKeydown = (e: KeyboardEvent) => {
-          const listItemWithFocus = Array.from(list.childNodes)
-            .map(i => i)
-            .find(item => {
-              console.log([...list.childNodes])
-              console.log(item)
-              return item.querySelector<HTMLElement>(
-                '[tabindex]:not([tabindex="-1"])'
-              )
-            })
+          const listItemWithFocus = Array.from(list.childNodes).find(item => {
+            return item.querySelector<HTMLElement>(
+              '[tabindex]:not([tabindex="-1"])'
+            )
+          })
           const changeFocus = (nextFocusItem?: HTMLElement | null) => {
+            // Prevent screen from scrolling with arrow keys
+            e.preventDefault()
             if (listItemWithFocus && nextFocusItem) {
               const oldFocusItem = listItemWithFocus.querySelector<HTMLElement>(
                 '[tabindex="0"]'
@@ -126,13 +123,22 @@ export const useRovingTabIndex = () => {
               nextFocusItem.focus()
             }
           }
+
+          const getHorizontalIndex = () => {
+            const allOldFocusItems = listItemWithFocus?.querySelectorAll<
+              HTMLElement
+            >('[tabindex]')
+            return Array.from(allOldFocusItems ?? []).findIndex(
+              h => h.tabIndex === 0
+            )
+          }
+
           const verticalNav = (sibling?: HTMLElement | null) => {
-            e.preventDefault()
             const allFocusItems = sibling?.querySelectorAll<HTMLElement>(
               '[tabindex]'
             )
             const nextFocusRowItemIndex = clampNumber(
-              horizontalIndex.current ?? 0,
+              getHorizontalIndex() ?? 0,
               0,
               allFocusItems?.length ?? 1
             )
@@ -143,21 +149,16 @@ export const useRovingTabIndex = () => {
           }
 
           const horizontalNav = (direction: 1 | -1) => {
-            e.preventDefault()
             const allFocusItems = Array.from(
               listItemWithFocus?.querySelectorAll<HTMLElement>('[tabindex]') ??
                 []
             )
-            const focusedIndex = allFocusItems?.findIndex(
-              item => item.tabIndex === 0
-            )
             const nextFocusIndex = clampNumber(
-              focusedIndex + direction,
+              getHorizontalIndex() + direction,
               0,
               allFocusItems.length - 1
             )
             const nextFocusItem = allFocusItems[nextFocusIndex]
-            horizontalIndex.current = nextFocusIndex
             changeFocus(nextFocusItem)
           }
 
