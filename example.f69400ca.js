@@ -29697,19 +29697,32 @@ exports.nanoid = nanoid;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.useUUID = exports.useRovingTabIndex = exports.useFocusOnMount = exports.useFocusOnFirstFocusable = exports.clampNumber = exports.Thing = void 0;
+exports.useRovingTabIndex = exports.useFocusOnMount = exports.useFocusOnFirstFocusable = exports.Thing = void 0;
+
+var _react = _interopRequireWildcard(require("react"));
 
 var _nanoid = require("nanoid");
 
-var _react = _interopRequireDefault(require("react"));
+function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function () { return cache; }; return cache; }
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
 
-// see: https://github.com/storybookjs/storybook/issues/9556
+var useUUID = function useUUID(prefix) {
+  var _React$useState = (0, _react.useState)("" + (prefix ? prefix + '-' : '') + (0, _nanoid.nanoid)(5)),
+      id = _React$useState[0];
+
+  return id;
+};
+
+var clampNumber = function clampNumber(num, a, b) {
+  return Math.max(Math.min(num, Math.max(a, b)), Math.min(a, b));
+}; // see: https://github.com/storybookjs/storybook/issues/9556
 
 /**
  * A custom Thing component. Neat!
  */
+
+
 var Thing = function Thing(_ref) {
   var children = _ref.children;
   return _react.default.createElement("div", null, children || "the snozzberries taste like snozzberries");
@@ -29729,8 +29742,6 @@ exports.Thing = Thing;
 
 var useRovingTabIndex = function useRovingTabIndex() {
   var instructionsId = useUUID();
-
-  var horizontalIndex = _react.default.useRef();
 
   var listRef = _react.default.useCallback(function (list) {
     var cleanUpFns = []; // add screen reader instructions
@@ -29783,15 +29794,14 @@ var useRovingTabIndex = function useRovingTabIndex() {
 
     if (list) {
       var onKeydown = function onKeydown(e) {
-        var listItemWithFocus = Array.from(list.childNodes).map(function (i) {
-          return i;
-        }).find(function (item) {
-          console.log([].concat(list.childNodes));
-          console.log(item);
+        var listItemWithFocus = Array.from(list.childNodes).find(function (item) {
           return item.querySelector('[tabindex]:not([tabindex="-1"])');
         });
 
         var changeFocus = function changeFocus(nextFocusItem) {
+          // Prevent screen from scrolling with arrow keys
+          e.preventDefault();
+
           if (listItemWithFocus && nextFocusItem) {
             var oldFocusItem = listItemWithFocus.querySelector('[tabindex="0"]');
             if (oldFocusItem) oldFocusItem.tabIndex = -1;
@@ -29800,12 +29810,18 @@ var useRovingTabIndex = function useRovingTabIndex() {
           }
         };
 
-        var verticalNav = function verticalNav(sibling) {
-          var _horizontalIndex$curr, _allFocusItems$length;
+        var getHorizontalIndex = function getHorizontalIndex() {
+          var allOldFocusItems = listItemWithFocus == null ? void 0 : listItemWithFocus.querySelectorAll('[tabindex]');
+          return Array.from(allOldFocusItems != null ? allOldFocusItems : []).findIndex(function (h) {
+            return h.tabIndex === 0;
+          });
+        };
 
-          e.preventDefault();
+        var verticalNav = function verticalNav(sibling) {
+          var _getHorizontalIndex, _allFocusItems$length;
+
           var allFocusItems = sibling == null ? void 0 : sibling.querySelectorAll('[tabindex]');
-          var nextFocusRowItemIndex = clampNumber((_horizontalIndex$curr = horizontalIndex.current) != null ? _horizontalIndex$curr : 0, 0, (_allFocusItems$length = allFocusItems == null ? void 0 : allFocusItems.length) != null ? _allFocusItems$length : 1);
+          var nextFocusRowItemIndex = clampNumber((_getHorizontalIndex = getHorizontalIndex()) != null ? _getHorizontalIndex : 0, 0, (_allFocusItems$length = allFocusItems == null ? void 0 : allFocusItems.length) != null ? _allFocusItems$length : 1);
           var nextFocusItem = Array.from(allFocusItems != null ? allFocusItems : [])[nextFocusRowItemIndex];
           changeFocus(nextFocusItem);
         };
@@ -29813,14 +29829,9 @@ var useRovingTabIndex = function useRovingTabIndex() {
         var horizontalNav = function horizontalNav(direction) {
           var _listItemWithFocus$qu;
 
-          e.preventDefault();
           var allFocusItems = Array.from((_listItemWithFocus$qu = listItemWithFocus == null ? void 0 : listItemWithFocus.querySelectorAll('[tabindex]')) != null ? _listItemWithFocus$qu : []);
-          var focusedIndex = allFocusItems == null ? void 0 : allFocusItems.findIndex(function (item) {
-            return item.tabIndex === 0;
-          });
-          var nextFocusIndex = clampNumber(focusedIndex + direction, 0, allFocusItems.length - 1);
+          var nextFocusIndex = clampNumber(getHorizontalIndex() + direction, 0, allFocusItems.length - 1);
           var nextFocusItem = allFocusItems[nextFocusIndex];
-          horizontalIndex.current = nextFocusIndex;
           changeFocus(nextFocusItem);
         };
 
@@ -29890,7 +29901,7 @@ var useRovingTabIndex = function useRovingTabIndex() {
 exports.useRovingTabIndex = useRovingTabIndex;
 
 function getKeyboardFocusableElements(element) {
-  return [].concat(element.querySelectorAll('a, button, input, textarea, select, details,[tabindex]:not([tabindex="-1"])')).filter(function (el) {
+  return Array.from(element.querySelectorAll('a, button, input, textarea, select, details,[tabindex]:not([tabindex="-1"])')).filter(function (el) {
     return !el.hasAttribute('disabled');
   });
 }
@@ -29923,22 +29934,7 @@ var useFocusOnMount = function useFocusOnMount(active) {
 };
 
 exports.useFocusOnMount = useFocusOnMount;
-
-var useUUID = function useUUID(prefix) {
-  var _React$useState = _react.default.useState("" + (prefix ? prefix + '-' : '') + (0, _nanoid.nanoid)(5)),
-      id = _React$useState[0];
-
-  return id;
-};
-
-exports.useUUID = useUUID;
-
-var clampNumber = function clampNumber(num, a, b) {
-  return Math.max(Math.min(num, Math.max(a, b)), Math.min(a, b));
-};
-
-exports.clampNumber = clampNumber;
-},{"nanoid":"../node_modules/nanoid/index.browser.js","react":"../node_modules/react/index.js"}],"src/ComplexList.tsx":[function(require,module,exports) {
+},{"react":"../node_modules/react/index.js","nanoid":"../node_modules/nanoid/index.browser.js"}],"src/ComplexList.tsx":[function(require,module,exports) {
 "use strict";
 
 var __createBinding = this && this.__createBinding || (Object.create ? function (o, m, k, k2) {
@@ -30120,9 +30116,22 @@ function _interopDefault(ex) {
   return ex && _typeof(ex) === 'object' && 'default' in ex ? ex['default'] : ex;
 }
 
+var React = require('react');
+
+var React__default = _interopDefault(React);
+
 var nanoid = require('nanoid');
 
-var React = _interopDefault(require('react')); // see: https://github.com/storybookjs/storybook/issues/9556
+var useUUID = function useUUID(prefix) {
+  var _React$useState = React.useState("" + (prefix ? prefix + '-' : '') + nanoid.nanoid(5)),
+      id = _React$useState[0];
+
+  return id;
+};
+
+var clampNumber = function clampNumber(num, a, b) {
+  return Math.max(Math.min(num, Math.max(a, b)), Math.min(a, b));
+}; // see: https://github.com/storybookjs/storybook/issues/9556
 
 /**
  * A custom Thing component. Neat!
@@ -30131,7 +30140,7 @@ var React = _interopDefault(require('react')); // see: https://github.com/storyb
 
 var Thing = function Thing(_ref) {
   var children = _ref.children;
-  return React.createElement("div", null, children || "the snozzberries taste like snozzberries");
+  return React__default.createElement("div", null, children || "the snozzberries taste like snozzberries");
 };
 /** Usage Instructions:
  * 1. Place returned ref on any ul, tableBody, or tableHeader (ex. <ul ref={listRef}>...</ul>)
@@ -30146,8 +30155,7 @@ var Thing = function Thing(_ref) {
 
 var useRovingTabIndex = function useRovingTabIndex() {
   var instructionsId = useUUID();
-  var horizontalIndex = React.useRef();
-  var listRef = React.useCallback(function (list) {
+  var listRef = React__default.useCallback(function (list) {
     var cleanUpFns = []; // add screen reader instructions
 
     if (list != null && list.parentElement) {
@@ -30198,15 +30206,14 @@ var useRovingTabIndex = function useRovingTabIndex() {
 
     if (list) {
       var onKeydown = function onKeydown(e) {
-        var listItemWithFocus = Array.from(list.childNodes).map(function (i) {
-          return i;
-        }).find(function (item) {
-          console.log([].concat(list.childNodes));
-          console.log(item);
+        var listItemWithFocus = Array.from(list.childNodes).find(function (item) {
           return item.querySelector('[tabindex]:not([tabindex="-1"])');
         });
 
         var changeFocus = function changeFocus(nextFocusItem) {
+          // Prevent screen from scrolling with arrow keys
+          e.preventDefault();
+
           if (listItemWithFocus && nextFocusItem) {
             var oldFocusItem = listItemWithFocus.querySelector('[tabindex="0"]');
             if (oldFocusItem) oldFocusItem.tabIndex = -1;
@@ -30215,12 +30222,18 @@ var useRovingTabIndex = function useRovingTabIndex() {
           }
         };
 
-        var verticalNav = function verticalNav(sibling) {
-          var _horizontalIndex$curr, _allFocusItems$length;
+        var getHorizontalIndex = function getHorizontalIndex() {
+          var allOldFocusItems = listItemWithFocus == null ? void 0 : listItemWithFocus.querySelectorAll('[tabindex]');
+          return Array.from(allOldFocusItems != null ? allOldFocusItems : []).findIndex(function (h) {
+            return h.tabIndex === 0;
+          });
+        };
 
-          e.preventDefault();
+        var verticalNav = function verticalNav(sibling) {
+          var _getHorizontalIndex, _allFocusItems$length;
+
           var allFocusItems = sibling == null ? void 0 : sibling.querySelectorAll('[tabindex]');
-          var nextFocusRowItemIndex = clampNumber((_horizontalIndex$curr = horizontalIndex.current) != null ? _horizontalIndex$curr : 0, 0, (_allFocusItems$length = allFocusItems == null ? void 0 : allFocusItems.length) != null ? _allFocusItems$length : 1);
+          var nextFocusRowItemIndex = clampNumber((_getHorizontalIndex = getHorizontalIndex()) != null ? _getHorizontalIndex : 0, 0, (_allFocusItems$length = allFocusItems == null ? void 0 : allFocusItems.length) != null ? _allFocusItems$length : 1);
           var nextFocusItem = Array.from(allFocusItems != null ? allFocusItems : [])[nextFocusRowItemIndex];
           changeFocus(nextFocusItem);
         };
@@ -30228,14 +30241,9 @@ var useRovingTabIndex = function useRovingTabIndex() {
         var horizontalNav = function horizontalNav(direction) {
           var _listItemWithFocus$qu;
 
-          e.preventDefault();
           var allFocusItems = Array.from((_listItemWithFocus$qu = listItemWithFocus == null ? void 0 : listItemWithFocus.querySelectorAll('[tabindex]')) != null ? _listItemWithFocus$qu : []);
-          var focusedIndex = allFocusItems == null ? void 0 : allFocusItems.findIndex(function (item) {
-            return item.tabIndex === 0;
-          });
-          var nextFocusIndex = clampNumber(focusedIndex + direction, 0, allFocusItems.length - 1);
+          var nextFocusIndex = clampNumber(getHorizontalIndex() + direction, 0, allFocusItems.length - 1);
           var nextFocusItem = allFocusItems[nextFocusIndex];
-          horizontalIndex.current = nextFocusIndex;
           changeFocus(nextFocusItem);
         };
 
@@ -30302,13 +30310,13 @@ var useRovingTabIndex = function useRovingTabIndex() {
 
 
 function getKeyboardFocusableElements(element) {
-  return [].concat(element.querySelectorAll('a, button, input, textarea, select, details,[tabindex]:not([tabindex="-1"])')).filter(function (el) {
+  return Array.from(element.querySelectorAll('a, button, input, textarea, select, details,[tabindex]:not([tabindex="-1"])')).filter(function (el) {
     return !el.hasAttribute('disabled');
   });
 }
 
 var useFocusOnFirstFocusable = function useFocusOnFirstFocusable() {
-  var parentRef = React.useCallback(function (node) {
+  var parentRef = React__default.useCallback(function (node) {
     if (node) {
       var firstElement = getKeyboardFocusableElements(node)[0];
       firstElement.focus();
@@ -30320,8 +30328,8 @@ var useFocusOnFirstFocusable = function useFocusOnFirstFocusable() {
 
 
 var useFocusOnMount = function useFocusOnMount(active) {
-  var focusRef = React.useRef(null);
-  React.useEffect(function () {
+  var focusRef = React__default.useRef(null);
+  React__default.useEffect(function () {
     if (active && focusRef.current) {
       focusRef.current.focus();
     }
@@ -30329,24 +30337,11 @@ var useFocusOnMount = function useFocusOnMount(active) {
   return focusRef;
 };
 
-var useUUID = function useUUID(prefix) {
-  var _React$useState = React.useState("" + (prefix ? prefix + '-' : '') + nanoid.nanoid(5)),
-      id = _React$useState[0];
-
-  return id;
-};
-
-var clampNumber = function clampNumber(num, a, b) {
-  return Math.max(Math.min(num, Math.max(a, b)), Math.min(a, b));
-};
-
 exports.Thing = Thing;
-exports.clampNumber = clampNumber;
 exports.useFocusOnFirstFocusable = useFocusOnFirstFocusable;
 exports.useFocusOnMount = useFocusOnMount;
 exports.useRovingTabIndex = useRovingTabIndex;
-exports.useUUID = useUUID;
-},{"nanoid":"../node_modules/nanoid/index.browser.js","react":"../node_modules/react/index.js"}],"../dist/index.js":[function(require,module,exports) {
+},{"react":"../node_modules/react/index.js","nanoid":"../node_modules/nanoid/index.browser.js"}],"../dist/index.js":[function(require,module,exports) {
 'use strict';
 
 if ("development" === 'production') {
@@ -30569,7 +30564,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "58961" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "52725" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
