@@ -38,6 +38,13 @@
   "name": "@20i/use-roving-tabindex-a11y",
   "author": "Greg McKelvey",
   "homepage": "https://github.com/twentyideas/use-roving-tabindex-a11y",
+  "keywords": [
+    "a11y",
+    "accessibility",
+    "keyboard",
+    "tabindex",
+    "roving"
+  ],
   "readme": "https://github.com/twentyideas/use-roving-tabindex-a11y/blob/main/README.md",
   "repository": {
     "url": "https://github.com/twentyideas/use-roving-tabindex-a11y.git",
