@@ -49,7 +49,6 @@
   "repository": {
     "url": "https://github.com/twentyideas/use-roving-tabindex-a11y.git",
     "type": "git"
-
   },
   "module": "dist/use-roving-tabindex-a11y.esm.js",
   "size-limit": [
@@ -65,11 +64,6 @@
   "devDependencies": {
     "@babel/core": "^7.13.10",
     "@size-limit/preset-small-lib": "^4.10.2",
-    "@storybook/addon-essentials": "^6.1.21",
-    "@storybook/addon-info": "^5.3.21",
-    "@storybook/addon-links": "^6.1.21",
-    "@storybook/addons": "^6.3.1",
-    "@storybook/react": "^6.1.21",
     "@types/react": "^17.0.3",
     "@types/react-dom": "^17.0.3",
     "babel-loader": "^8.2.2",
