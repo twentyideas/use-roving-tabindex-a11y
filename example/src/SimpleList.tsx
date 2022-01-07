@@ -5,7 +5,7 @@ export const SimpleList: React.FC = () => {
   const listRef = useRovingTabIndex()
   return (
     <div>
-      <h3>Simple List</h3>
+      <h3 >Simple List</h3>
       <ul ref={listRef}>
         <ListItem
           tabindex={0}

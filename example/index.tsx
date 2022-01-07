@@ -4,6 +4,7 @@ import * as ReactDOM from 'react-dom'
 import { ComplexList } from './src/ComplexList'
 import { SimpleList } from './src/SimpleList'
 import { Table } from './src/Table'
+import TestSimpleList from './src/TestSimpleList'
 
 const App = () => {
   return (
@@ -13,6 +14,7 @@ const App = () => {
         Use the up and down arrow keys to navigate each list or table, and use
         the left and right arrow keys to navigate inside of the item
       </p>
+      <TestSimpleList/>
       <hr />
       <SimpleList />
       <hr />
