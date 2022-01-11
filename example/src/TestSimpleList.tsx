@@ -8,12 +8,12 @@ const TestSimpleList:React.FC = () => {
     return (
         <div>
             <h3 data-testid="simplist">TEST</h3>
-            {/* <SimpleList /> */}
-            <ul ref={listRef} >
+            <SimpleList data-testid={'pls work'} />
+            {/* <ul ref={listRef} >
                 <li tabIndex={-1}>1</li>
                 <li tabIndex={0}>2</li>
                 <li tabIndex={-1} >3</li>
-            </ul>
+            </ul> */}
         </div>
     )
 }
