@@ -15,7 +15,7 @@ const App = () => {
         Use the up and down arrow keys to navigate each list or table, and use
         the left and right arrow keys to navigate inside of the item
       </p>
-      <TestSimpleList/>
+      {/* <TestSimpleList/> */}
       {/* <List/> */}
       <hr />
       <SimpleList />

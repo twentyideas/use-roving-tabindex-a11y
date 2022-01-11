@@ -40,15 +40,15 @@ it('should render the list item with the value of 1', async () => {
   expect(listElement).toBeInTheDocument()
 })
 // passes test
-it('should render the list in focus', async () => {
-  render(<List/>)
-  const refElement =  await screen.findByTestId('dummyRef')
+// it('should render the list in focus', async () => {
+//   render(<List/>)
+//   const refElement =  await screen.findByTestId('dummyRef')
 
-  // act(()=> {
-  //    refElement.current.focus();
-  // })
-  expect(refElement).toBeInTheDocument()
-})
+//   // act(()=> {
+//   //    refElement.current.focus();
+//   // })
+//   expect(refElement).toBeInTheDocument()
+// })
 
 // testing just the hook 
 // result returns an object cant invoke the hook without a list 
@@ -60,29 +60,29 @@ it('should render the list in focus', async () => {
 //     expect(ListItem).toBeInTheDocument()
 // })
 
-it('should render the list with use tab index', async ()=> {
-  render(<SimpleList />);
-  //  const result = renderHook(()=> {
-  //    useRovingTabIndex(<List/>)
-  //  })
-  const ref = renderHook(useRovingTabIndex)
-  const simpleRef = await screen.findByTestId('dummyRef')
-  // const firstItem = screen.getByTitle('Item 1')
-  // const listElement = getByText(/simple list/i)
-  // expect(listElement).toBeInTheDocument();
-  // act(()=>{
-  //   if( ref && ref.current){
-  //     fireEvent.focus(ref)
-  //       const listElement = getByText(/simple list/i)
+// it('should render the list with use tab index', async ()=> {
+//   render(<SimpleList />);
+//   //  const result = renderHook(()=> {
+//   //    useRovingTabIndex(<List/>)
+//   //  })
+//   const ref = renderHook(useRovingTabIndex)
+//   const simpleRef = await screen.findByTestId('dummyRef')
+//   // const firstItem = screen.getByTitle('Item 1')
+//   // const listElement = getByText(/simple list/i)
+//   // expect(listElement).toBeInTheDocument();
+//   // act(()=>{
+//   //   if( ref && ref.current){
+//   //     fireEvent.focus(ref)
+//   //       const listElement = getByText(/simple list/i)
 
-  //   }
-  // })
-  // const buttonElement = getByTestId('btn') 
-  const list = simpleRef.ref;
+//   //   }
+//   // })
+//   // const buttonElement = getByTestId('btn') 
+//   const list = simpleRef.ref;
 
-  expect(simpleRef).toBeInTheDocument();
-  expect(list)
-})
+//   expect(simpleRef).toBeInTheDocument();
+//   expect(list)
+// })
 
 
 // finally able to locate the list items! woop woop. 
@@ -91,18 +91,38 @@ it('should render the simplelist component', async ()=> {
     render(<TestSimpleList />);
     // const listElement = screen.getByText(/All the things you could ever want to know/i)
     // expect(listElement).toBeInTheDocument();
-    const cmpnt = await screen.findAllByText('All the things you could ever want to know')
+    const cmpnt =  screen.getAllByText('All the things you could ever want to know')
+    expect(cmpnt[0]).toBeInTheDocument()
 })
 
+// look for anchor tag, not the componenet
+// <a href="#" tabindex="0"><h4>Item 2</h4></a> 
 it('should render the simplelist component', async ()=> {
-  render(<TestSimpleList />);
+  render(<SimpleList />);
   // const listElement = screen.getByText(/All the things you could ever want to know/i)
   // expect(listElement).toBeInTheDocument();
-  let cmpnt=[];
+  // const listElement = getByRole()
+  const cmpnt =  screen.getAllByText('All the things you could ever want to know')
+  const listItem1 = cmpnt[0];
   
+  // fireEvent.keyDown(btnCmpt, {keyDown: "Tab",code:"Tab", charCode: 9 })
+  fireEvent.keyDown(listItem1, {key: 'ArrowDown', code: 'ArrowDown', charCode: 40})
+
+    // expect(listItem1).toHaveFocus();
+
 
 })
 
+
+// locate anchor tags, not headers 
+// searching for text item finds headers
+it('should find the anchor tags rendered on the screen', async () => {
+  render(<SimpleList />)
+  const anchorElements = screen.getAllByRole('link')
+  fireEvent.keyDown(anchorElements[0], {key: 'ArrowDown', code: 'ArrowDown', charCode: 40})
+
+  expect(anchorElements[1]).toHaveFocus()
+})
 
 test('should increment counter', () => {
   const { result } = renderHook(() => useCounter())

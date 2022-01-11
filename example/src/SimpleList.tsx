@@ -3,18 +3,13 @@ import { useRovingTabIndex } from '../../.'
 
 export const SimpleList: React.FC = () => {
 
-  const onTestClick = () => {
-    console.log('TESTING')
-  }
-
+  
   const listRef = useRovingTabIndex()
   return (
     <div>
       <h3 >Simple List</h3>
-      <ul ref={listRef} data-testid={'dummyRef'} className='testing' >
-        <button data-testid={'btn'} onClick={onTestClick}>click me</button>
+      <ul ref={listRef} >
         <ListItem
-          data-testid={'firstItem'}
           tabindex={0}
           title="Item 1"
           description="All the things you could ever want to know"
