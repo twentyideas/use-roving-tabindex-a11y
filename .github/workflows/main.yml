@@ -7,7 +7,9 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        node: ['10.x', '12.x', '14.x']
+        # Trev: react testing library only works on 12 and up? Do we wanna run all those node tests?
+        # probably just do 16 and be cool with it?
+        node: ['16.x']
         os: [ubuntu-latest, windows-latest, macOS-latest]
 
     steps:
