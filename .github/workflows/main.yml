@@ -21,6 +21,10 @@ jobs:
         with:
           node-version: ${{ matrix.node }}
 
+      - name: Install deps for example for react-testing lib 
+        uses: bahmutov/npm-install@v1
+	working-directory: example
+
       - name: Install deps and build (with cache)
         uses: bahmutov/npm-install@v1
 
